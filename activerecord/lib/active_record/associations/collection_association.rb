@@ -256,16 +256,25 @@ module ActiveRecord
       end
 
       def include?(record)
-        if record.is_a?(reflection.klass)
-          if record.new_record?
-            include_in_memory?(record)
-          else
-            loaded? ? target.include?(record) : scope.exists?(record.id)
-          end
+        klass = reflection.klass
+        return false unless record.is_a?(klass)
+
+        if record.new_record?
+          include_in_memory?(record)
+        elsif loaded?
+          target.include?(record)
         else
-          false
+          primary_key = klass.primary_key
+          record_id = record.id
+          conditions = if primary_key.is_a?(Array) && record_id.is_a?(Array)
+                          primary_key.zip(record_id).to_h
+                        else
+                          record_id
+                        end
+          scope.exists?(conditions)
         end
       end
+
 
       def load_target
         if find_target?

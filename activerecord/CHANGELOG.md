@@ -1,3 +1,7 @@
+*   Fix handling of composite primary keys in the `include?` method for associations.
+
+    *Jay Ang*
+
 *   Allow to configure `strict_loading_mode` globally or within a model.
 
     Defaults to `:all`, can be changed to `:n_plus_one_only`.

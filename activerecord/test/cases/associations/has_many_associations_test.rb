@@ -2257,6 +2257,13 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_equal false, firm.clients.include?(client)
   end
 
+  def test_include_returns_true_for_record_with_composite_primary_keys
+    book = cpk_books(:cpk_great_author_first_book)
+    chapter = book.chapters.create!(title: "Chapter 1")
+
+    assert_equal true, book.chapters.include?(chapter)
+  end
+
   def test_calling_first_nth_or_last_on_association_should_not_load_association
     firm = companies(:first_firm)
     firm.clients.first
